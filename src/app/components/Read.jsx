@@ -11,11 +11,11 @@ const Read = () =>{
 
     const[id,setId] = useState(); 
     const[showPopup,setShowPopup] = useState(false)
-    const { users, loading } =useSelector((state) =>state.app);
+    const { users, loading, searchData } =useSelector((state) =>state.app);
 
     useEffect(()=>{
         dispatch(showUser());
-    },[]);
+    }, []);
 
     if(loading){
         return <h2> Loading</h2>
@@ -26,14 +26,26 @@ const Read = () =>{
             { showPopup && <CustomModal id={id} showPopup={showPopup} setShowPopup={setShowPopup}/>}
             <h2>All Datas</h2>
             <div>
-                {users && users.map((ele) =>(
+                {users &&
+                users
+                .filter((ele) => {
+                    if (!searchData || searchData.length === 0) {
+                        return true;
+                    } else {
+                        return ele.name.toLowerCase().includes(searchData.toLowerCase());
+                    }
+                })
+                
+                // users.map((ele) =>(
+                    .map((ele) =>(
                     <div key={ele.id} className="card w-50 mx-auto my-2">
                         <div className="card-body">
                             <h5 className="card-title">{ele.name}</h5>
                             <h6 className="card-subtitle mb-2 text-muted">{ele.email}</h6>
                             <p className="card-text">{ele.gender}</p>
                             <button className="card-link" onClick={()=>[setId(ele.id), setShowPopup(true)]}>View</button>
-                            <a href="#" className="card-link">Edit</a>
+                            {/* <a href="#" className="card-link">Edit</a> */}
+                            <Link to={`/edit/${ele.id}`} className= "card-link">edit</Link>
                             <Link onClick={()=> dispatch(deleteUser(ele.id))}className="card-link">Delete</Link>
                             {/* <Link></Link> */}
                         </div>

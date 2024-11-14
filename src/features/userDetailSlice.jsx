@@ -59,6 +59,33 @@ export const deleteUser = createAsyncThunk(
         }
     }
 );
+// update action
+export const updateUser = createAsyncThunk(
+    "userDetail/updateUser",
+    async (data, { rejectWithValue }) => {
+        try {
+           
+            const response = await fetch(`https://660e380e6ddfa2943b361af3.mockapi.io/crud/${data.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            console.log(response);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            console.log("data23", result);
+            return result;
+        } catch (error) {
+            console.error("Error:", error);
+            return rejectWithValue(error.message);
+        }
+    }
+);
 
 export const userDetail = createSlice({
     name: "userDetail",
@@ -66,6 +93,14 @@ export const userDetail = createSlice({
         users: [],
         loading: false,
         error: null,
+        searchData :[],
+    },
+
+    reducers : {
+        seachUser :(state, action) =>{
+            console.log(action.payload);
+            state.searchData = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -112,8 +147,24 @@ export const userDetail = createSlice({
             .addCase(deleteUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(updateUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.loading = false;
+                // state.users.push(action.payload);
+                state.users = state.users.map((ele) =>
+                    ele.id === action.payload.id ? action.payload :ele )
+            })
+            .addCase(updateUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });
 
 export default userDetail.reducer;
+
+export const {seachUser} = userDetail.actions;

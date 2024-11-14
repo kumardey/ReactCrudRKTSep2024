@@ -1,9 +1,16 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { seachUser } from "../../features/userDetailSlice";
 
 const Navbar = () =>{
+    const [searchData ,setSearchData] = useState();
+    const dispatch =useDispatch();
     const allusers = useSelector((state) =>state.app.users);
+
+    useEffect(()=>{
+        dispatch(seachUser(searchData));
+    },[searchData])
     return(
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -24,7 +31,8 @@ const Navbar = () =>{
                 
                 </ul>
                 <form className="d-flex">
-                <input className="form-control me-2 " type="search" placeholder="Search" aria-label="Search"/>
+                <input className="form-control me-2 " type="search" placeholder="Search" aria-label="Search"
+                onChange={(e)=>setSearchData(e.target.value)}/>
                 <button className="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
