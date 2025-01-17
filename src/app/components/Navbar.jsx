@@ -27,6 +27,9 @@ const Navbar = () =>{
                 <li className="nav-item">
                     <Link to="/read" className="nav-link">All Post({allusers.lenght})</Link>
                 </li>
+                <li className="nav-item">
+                    <Link to="/listurl"className="nav-link" >List Url</Link>
+                </li>
                 
                 
                 </ul>
